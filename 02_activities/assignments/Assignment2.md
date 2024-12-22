@@ -55,6 +55,33 @@ The store wants to keep customer addresses. Propose two architectures for the CU
 
 ```
 Your answer...
+Two architectures for customer_address:
+
+1. Type 2 SCD (Retaining Changes):
+customer_address_id | customer_id | address_line | city | state | postal_code | valid_from | valid_to | is_current
+-------------------|-------------|--------------|------|-------|-------------|------------|----------|------------
+1 | 100 | 123 Main St | Toronto | ON | M5V 2T6 | 2023-01-01 | 2023-06-30 | 0
+2 | 100 | 456 Queen St | Toronto | ON | M5H 2N2 | 2023-07-01 | NULL | 1
+
+In this Type 2 Slowly Changing Dimension approach:
+- Each address change creates a new row
+- Historical address information is preserved
+- `valid_from` and `valid_to` track the time period of each address
+- `is_current` flag indicates the most recent address
+- Allows tracking of customer address changes over time
+
+2. Type 1 SCD (Overwriting Changes):
+customer_id | address_line | city | state | postal_code
+------------|--------------|------|-------|-------------
+100 | 456 Queen St | Toronto | ON | M5H 2N2
+
+In this Type 1 Slowly Changing Dimension approach:
+- Only the most recent address is stored
+- Previous address information is completely overwritten
+- No historical tracking of address changes
+- Simpler design that always reflects the current state
+
+The key difference is that Type 2 preserves historical data, while Type 1 always reflects the current address by overwriting previous information.
 ```
 
 ***
